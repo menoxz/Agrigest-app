@@ -5,17 +5,22 @@ Ce document explique comment l'authentification a été mise en place dans ce pr
 
 ## Étapes d'implémentation
 
-### 1. Modifications du Dockerfile
+### 1. Approche d'installation
 
-Pour prendre en charge l'authentification, nous avons modifié le Dockerfile pour:
-- Installer Node.js et NPM, nécessaires pour compiler les assets frontend
-- Configurer Git pour résoudre les problèmes de propriété dans le conteneur
-- Installer Laravel Breeze via Composer avec des options spécifiques pour éviter les erreurs
-- Configurer Breeze avec le stack Blade (interface utilisateur traditionnelle)
-- Compiler les assets frontend avec NPM
+Après plusieurs tentatives et problèmes rencontrés, nous avons adopté une approche en deux temps :
 
-Voici les lignes ajoutées au Dockerfile:
+1. **Création d'un Dockerfile sans installation de Breeze**
+   - Le Dockerfile ne contient plus l'installation de Breeze car cela provoquait des erreurs en mode non-interactif.
+   - Seuls les prérequis (PHP, Node.js, NPM) sont installés dans l'image Docker.
+
+2. **Installation post-déploiement**
+   - Breeze est installé manuellement après le démarrage des conteneurs.
+   - Cette approche évite les problèmes liés au mode non-interactif et aux contrôleurs manquants.
+
+Voici le Dockerfile sans l'installation de Breeze :
 ```
+FROM php:8.2-fpm
+
 # Installation des dépendances système
 RUN apt-get update && apt-get install -y \
     git \
@@ -28,68 +33,60 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm
 
+# Nettoyage du cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Installation des extensions PHP
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Installation de Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Définition du répertoire de travail
+WORKDIR /var/www
+
+# Copie des fichiers du projet
+COPY . /var/www
+
 # Attribution des permissions et configuration de Git pour le conteneur
 RUN chown -R www-data:www-data /var/www
 RUN git config --global --add safe.directory /var/www
 
-# Installation de Laravel Breeze et configuration de l'authentification
-# On installe Breeze APRÈS avoir configuré les routes pour éviter les erreurs
-RUN composer require laravel/breeze --dev --no-scripts
-# On génère les contrôleurs d'authentification et les vues
-RUN php artisan breeze:install blade --no-interaction
-RUN npm install
-RUN npm run build
-# On exécute les scripts composer post-install après avoir tout configuré
-RUN composer dump-autoload
+# Note: On n'installe PAS Breeze dans le Dockerfile car cela crée des problèmes en mode non-interactif
+# Breeze sera installé via une commande après le démarrage du conteneur
+
+# Exposition du port 9000
+EXPOSE 9000
+
+# Démarrage de PHP-FPM
+CMD ["php-fpm"]
 ```
 
-#### 1.1 Résolution des problèmes courants
+### 2. Commandes d'installation post-déploiement
 
-Lors de l'installation de Laravel Breeze dans un environnement Docker, plusieurs problèmes peuvent survenir :
+Une fois les conteneurs démarrés, Breeze est installé avec les commandes suivantes :
 
-1. **Problème de propriété Git** : Git refuse d'utiliser le répertoire si les propriétés ne sont pas correctes.
-   - Solution : Nous avons ajouté `RUN git config --global --add safe.directory /var/www` pour dire à Git de considérer ce répertoire comme sûr.
+```bash
+# Installation de Laravel Breeze
+docker exec -it agrigest-app composer require laravel/breeze --dev
 
-2. **Erreur d'installation des contrôleurs** : Les routes d'authentification font référence à des contrôleurs qui n'existent pas encore.
-   - Solution : Nous utilisons l'option `--no-scripts` lors de l'installation de Breeze pour éviter d'exécuter les scripts post-install à ce stade.
-   - Nous exécutons `composer dump-autoload` après avoir tout configuré pour finaliser l'installation.
+# Installation des fichiers Breeze avec l'interface Blade
+docker exec -it agrigest-app php artisan breeze:install blade --no-interaction
 
-3. **Problèmes d'interaction** : Les invites d'installation peuvent bloquer le processus de build Docker.
-   - Solution : Utilisation de l'option `--no-interaction` lors de l'installation de Breeze.
+# Installation des dépendances npm et compilation des assets
+docker exec -it agrigest-app npm install
+docker exec -it agrigest-app npm run build
 
-### 2. Dépannage après déploiement
+# Configuration de la base de données
+docker exec -it agrigest-app php artisan migrate
 
-Après le déploiement de l'application dans Docker, nous avons rencontré une erreur :
-```
-Illuminate\Contracts\Container\BindingResolutionException
-Target class [App\Http\Controllers\Auth\RegisteredUserController] does not exist.
-```
-
-#### 2.1 Cause du problème
-Cette erreur s'est produite car le Dockerfile a installé Breeze, mais les fichiers n'ont pas été correctement synchronisés entre le conteneur et le système hôte en raison du montage de volume dans docker-compose.yml.
-
-#### 2.2 Solution appliquée
-Nous avons exécuté la commande d'installation de Breeze directement dans le conteneur en cours d'exécution :
-```
-docker exec -it agrigest-app php artisan breeze:install blade
-```
-
-Cette opération a :
-1. Généré tous les contrôleurs d'authentification manquants dans `app/Http/Controllers/Auth/`
-2. Créé les vues Blade nécessaires dans `resources/views/auth/`
-3. Configuré les routes d'authentification correctement
-4. Installé et compilé les dépendances frontend (JS/CSS)
-
-Après cette installation, nous avons nettoyé les caches pour s'assurer que toutes les modifications soient prises en compte :
-```
-docker exec -it agrigest-app php artisan cache:clear
-docker exec -it agrigest-app php artisan view:clear
-docker exec -it agrigest-app php artisan config:clear
+# Nettoyage des caches
+docker exec -it agrigest-app php artisan optimize:clear
 ```
 
 ### 3. Configuration supplémentaire effectuée
 
-Après l'installation de Breeze via le Dockerfile, nous avons mis en place les éléments suivants :
+Après l'installation de Breeze via les commandes post-déploiement, nous avons mis en place les éléments suivants :
 
 #### 3.1 Création de la vue Dashboard
 Nous avons créé un dossier `resources/views/dashboard` et une vue `index.blade.php` pour afficher le tableau de bord des utilisateurs connectés :
@@ -217,6 +214,7 @@ Breeze génère automatiquement:
 
 En plus, nous avons créé :
 - La règle de validation `app/Rules/StrongPassword.php`
+- Le document d'installation `documentation/installation.txt`
 
 ### 6. Personnalisation possible
 
@@ -259,8 +257,27 @@ npm run build
 4. Vous pouvez modifier votre profil dans la page profil (/profile)
 5. Pour protéger vos propres routes, utilisez le middleware 'auth'
 
+## Résolution des problèmes courants
+
+Si vous rencontrez des problèmes d'authentification :
+
+1. **Les contrôleurs n'existent pas**
+   - Vérifiez que Breeze a été correctement installé
+   - Réexécutez la commande `php artisan breeze:install blade --no-interaction`
+
+2. **Erreurs de vue ou de template**
+   - Nettoyez le cache avec `php artisan view:clear`
+   - Vérifiez que les vues Blade sont correctement copiées
+
+3. **Problèmes de middleware**
+   - Rafraîchissez les caches de l'application avec `php artisan optimize:clear`
+
 ## Conclusion
 
-Laravel Breeze fournit un système d'authentification complet et sécurisé que vous pouvez facilement personnaliser selon les besoins du projet. L'installation via Docker permet de garantir que tous les développeurs travaillent dans un environnement cohérent.
+Pour résoudre définitivement les problèmes d'installation de Breeze, nous avons :
 
-En cas de problèmes similaires à l'avenir, la solution est généralement d'exécuter `php artisan breeze:install blade` directement dans le conteneur en cours d'exécution, puis de nettoyer tous les caches.
+1. Retiré l'installation de Breeze du Dockerfile
+2. Adopté une approche post-déploiement en exécutant les commandes manuellement après le démarrage des conteneurs
+3. Documenté le processus d'installation complet dans `documentation/installation.txt`
+
+Cette approche évite les erreurs liées au mode non-interactif et garantit une installation correcte et reproductible de l'authentification Laravel Breeze.
