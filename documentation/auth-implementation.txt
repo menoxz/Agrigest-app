@@ -146,6 +146,51 @@ Ce fichier contient toutes les routes spécifiques à l'authentification :
 - Routes pour invités (connexion, inscription, récupération de mot de passe)
 - Routes pour utilisateurs authentifiés (vérification email, déconnexion, etc.)
 
+#### 3.3 Mise en place d'une politique de mot de passe fort
+
+Nous avons implémenté une règle de validation personnalisée pour assurer des mots de passe forts :
+
+1. **Création de la règle** : Nous avons créé une classe `StrongPassword` dans `app/Rules/StrongPassword.php` :
+```php
+<?php
+
+namespace App\Rules;
+
+use Illuminate\Contracts\Validation\Rule;
+
+class StrongPassword implements Rule
+{
+    public function passes($attribute, $value)
+    {
+        // Vérification de la longueur minimale (8 caractères)
+        if (strlen($value) < 8) {
+            return false;
+        }
+
+        // Vérification qu'il y a au moins un chiffre
+        if (!preg_match('/[0-9]/', $value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function message()
+    {
+        return 'Le mot de passe doit contenir au moins 8 caractères et au moins un chiffre.';
+    }
+}
+```
+
+2. **Application de la règle** : Cette règle est appliquée dans tous les formulaires liés aux mots de passe :
+   - Inscription d'utilisateur (`RegisteredUserController`)
+   - Réinitialisation de mot de passe (`NewPasswordController`)
+   - Changement de mot de passe dans le profil (`PasswordController`)
+
+3. **Critères du mot de passe fort** :
+   - Longueur minimale : 8 caractères
+   - Doit contenir au moins un chiffre
+
 ### 4. Fonctionnalités d'authentification incluses
 
 L'installation de Laravel Breeze avec le stack Blade fournit:
@@ -158,6 +203,7 @@ L'installation de Laravel Breeze avec le stack Blade fournit:
 - Middleware d'authentification pour protéger les routes
 - Profil utilisateur (/profile)
 - Tableau de bord (/dashboard) protégé par authentification
+- Politique de mot de passe fort (personnalisée)
 
 ### 5. Structure des fichiers créés
 
@@ -168,6 +214,9 @@ Breeze génère automatiquement:
 - Middleware d'authentification dans `app/Http/Middleware/`
 - Modèle User (si non existant)
 - Migrations pour les tables utilisateurs et mots de passe
+
+En plus, nous avons créé :
+- La règle de validation `app/Rules/StrongPassword.php`
 
 ### 6. Personnalisation possible
 
@@ -180,6 +229,7 @@ Pour personnaliser l'authentification, vous pouvez:
   - La vue d'inscription
 - Modifier les règles de validation dans les controllers Auth
 - Personnaliser les emails envoyés dans `app/Notifications/`
+- Renforcer davantage la politique de mot de passe en ajoutant des critères supplémentaires à la règle `StrongPassword`
 
 ### 7. Utilisation après installation
 
@@ -204,6 +254,7 @@ npm run build
 
 1. Accéder à l'application sur http://localhost:8000
 2. Créer un compte via la page d'inscription (/register)
+   - Le mot de passe doit contenir au moins 8 caractères et au moins un chiffre
 3. Après connexion, vous serez redirigé vers le tableau de bord
 4. Vous pouvez modifier votre profil dans la page profil (/profile)
 5. Pour protéger vos propres routes, utilisez le middleware 'auth'
