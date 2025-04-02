@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TypeCulture extends Model
 {
 use HasFactory;
 
+    protected $table = 'type_cultures'; // Ensure the table name matches your database
     protected $fillable = ['libelle'];
 
     public function parcelles()
