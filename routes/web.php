@@ -5,6 +5,7 @@ use App\Http\Controllers\TypeCultureController;
 use App\Http\Controllers\ParcelleController;
 use App\Http\Controllers\TypeInterventionController;
 use App\Http\Controllers\ParcelleUserController;
+use App\Http\Controllers\RapportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/parcelles/{parcelle}/assign-user', [ParcelleUserController::class, 'assignUser'])->name('parcelles.assign-user');
     Route::delete('/parcelles/{parcelle}/remove-user', [ParcelleUserController::class, 'removeUser'])->name('parcelles.remove-user');
     Route::get('/parcelles/{parcelle}/user', [ParcelleUserController::class, 'getParcelleUser'])->name('parcelles.get-user');
+
+    // Route pour le rapport des interventions
+    Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
 });
 
 
