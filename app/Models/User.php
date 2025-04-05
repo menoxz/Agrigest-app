@@ -48,7 +48,7 @@ class User extends Authenticatable
         ];
     }
 
-        public function role()
+    public function role()
     {
         return $this->belongsTo(Role::class);
     }
@@ -58,13 +58,18 @@ class User extends Authenticatable
         return $this->hasMany(Intervention::class);
     }
 
+    public function parcelles()
+    {
+        return $this->hasMany(Parcelle::class);
+    }
+
     //ajout
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($user) {
-            if (!$user->role_id) { 
+            if (!$user->role_id) {
                 $role_agriculteur = Role::where('nom_role', 'agriculteur')->first();
                 $user->role_id = $role_agriculteur ? $role_agriculteur->id : null;
             }
