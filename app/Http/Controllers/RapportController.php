@@ -8,18 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Illuminate\Support\Facades\View;
 class RapportController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     public function rapportInterventions(Parcelle $parcelle, Request $request)
     {
         // Vérifier si l'utilisateur a accès à cette parcelle
-        if (Auth::user()->role->nom_role !== 'admin' && $parcelle->user_id !== Auth::id()) {
+        if (Auth::user()->role->nom_role !== 'admin' || $parcelle->user_id !== Auth::id()) {
             return response()->json(['message' => 'Accès non autorisé'], 403);
         }
 

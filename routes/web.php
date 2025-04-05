@@ -6,6 +6,7 @@ use App\Http\Controllers\ParcelleController;
 use App\Http\Controllers\TypeInterventionController;
 use App\Http\Controllers\ParcelleUserController;
 use App\Http\Controllers\RapportController;
+use App\Http\Controllers\StatistiquesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route pour le rapport des interventions
     Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
+
+    // Route pour afficher les statistiques des interventions
+    Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
 });
 
 
