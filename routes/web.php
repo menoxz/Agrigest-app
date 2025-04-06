@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ImprevuController;
+use App\Http\Controllers\InterventionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypeCultureController;
 use App\Http\Controllers\ParcelleController;
@@ -23,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('type-culture', TypeCultureController::class);
     Route::resource('type-intervention', TypeInterventionController::class);
     Route::resource('parcelle', ParcelleController::class);
+    Route::resource('intervention', InterventionController::class);
+    Route::resource('imprevu', ImprevuController::class);
 
 });
 

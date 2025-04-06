@@ -47,6 +47,16 @@
                 <i class="bi bi-map"></i>
                 <span>Parcelles</span>
             </a>
+
+            <a href="{{ route('intervention.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
+                </i> <i class="bi bi-hammer"></i>
+                <span>Interventions</span>
+            </a>
+
+            <a href="{{ route('imprevu.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
+                <i class="bi bi-bug-fill"></i>
+                <span>Imprevus</span>
+            </a>
           
         </div>
 
