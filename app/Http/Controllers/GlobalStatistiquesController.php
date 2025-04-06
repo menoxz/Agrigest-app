@@ -45,7 +45,7 @@ class GlobalStatistiquesController extends Controller
 
         $moisAnnee = Carbon::now()->format('F Y');
 
-        return response()->json([
+        return view('statistiques.globales', [
             'statistiques' => $statistiques,
             'periode' => "Données en cours de mois - $moisAnnee"
         ]);
