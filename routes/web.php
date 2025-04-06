@@ -7,6 +7,7 @@ use App\Http\Controllers\TypeInterventionController;
 use App\Http\Controllers\ParcelleUserController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\StatistiquesController;
+use App\Http\Controllers\GlobalStatistiquesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,6 +38,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route pour afficher les statistiques des interventions
     Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
+
+    // Route pour afficher les statistiques globales des parcelles
+    Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
 });
 
 
