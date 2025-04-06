@@ -31,7 +31,7 @@
         </div>
 
         <div class="mt-6">
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
+            <a href="{{ route('statistiques.globales') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-house-door-fill"></i>
                 <span>Dashboard</span>
             </a>
