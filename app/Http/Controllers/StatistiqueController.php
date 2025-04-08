@@ -5,37 +5,40 @@ namespace App\Http\Controllers;
 use App\Models\Parcelle;
 use App\Models\Intervention;
 use App\Models\Imprevu;
-use App\Models\TypeIntervention;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class GlobalStatistiquesController extends Controller
+class StatistiqueController extends Controller
 {
-    public function afficherStatistiquesGlobales()
+    public function afficherStatistique()
     {
-        // Précharger toutes les relations pour éviter les requêtes lentes
-        $parcelles = Parcelle::with('interventions.imprevus', 'typeCulture')->get();
-        $interventions = Intervention::with('imprevus')->get();
-        $imprevus = Imprevu::all();
-    
-        // Statistiques globales
+        $userId = Auth::id();
+
+        // ⚠️ On charge uniquement les parcelles de l'utilisateur connecté
+        $parcelles = Parcelle::with('interventions.imprevus', 'typeCulture')
+            ->where('user_id', $userId)
+            ->get();
+
+        // On extrait les interventions à partir des parcelles
+        $interventions = $parcelles->flatMap->interventions;
+
+        // Les imprevus sont déjà chargés avec les interventions
+        $imprevus = $interventions->flatMap->imprevus;
+
+        // Statistiques
         $totalParcelles = $parcelles->count();
         $totalInterventions = $interventions->count();
         $totalImprevus = $imprevus->count();
-    
-        // Répartition par statut d’intervention
+
         $parStatuts = $interventions->groupBy('statut')->map->count();
-    
-        // Durée et coût totaux
+
         $dureeTotale = $interventions->sum('duree');
         $coutTotal = $interventions->sum('cout');
-    
-        // Moyenne d’interventions par parcelle
+
         $moyenneInterventions = $totalParcelles > 0 ? round($totalInterventions / $totalParcelles, 2) : 0;
-    
-        // Nombre de types de culture différents
+
         $typesCulture = $parcelles->pluck('type_culture_id')->unique()->count();
-    
-        // Top 3 types de culture les plus utilisés
+
         $topTypesCulture = $parcelles->groupBy('type_culture_id')
             ->sortByDesc(fn($group) => count($group))
             ->take(3)
@@ -47,11 +50,9 @@ class GlobalStatistiquesController extends Controller
                     'nombre_parcelles' => count($group)
                 ];
             })->values();
-    
-        // Date
+
         $moisAnnee = Carbon::now()->locale('fr')->isoFormat('MMMM YYYY');
-    
-        // Retourne vers une vue avec toutes les données
+
         return view('statistiques.globales', [
             'periode' => "Données du mois de $moisAnnee",
             'statistiques' => [
@@ -67,6 +68,4 @@ class GlobalStatistiquesController extends Controller
             ]
         ]);
     }
-    
-    
 }

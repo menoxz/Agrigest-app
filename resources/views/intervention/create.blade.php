@@ -36,28 +36,12 @@
                 <label class="block text-gray-700">Quantité Produit</label>
                 <input type="number" step="0.01" name="qte_produit" class="w-full border rounded px-4 py-2" required>
             </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700">Date de fin</label>
-                <input type="date" name="date_fin" class="w-full border rounded px-4 py-2">
-            </div>
-
             <div class="mb-4">
                 <label class="block text-gray-700">Statut</label>
                 <select name="statut_intervention" class="w-full border rounded px-4 py-2" required>
                     <option value="En cours">En cours</option>
                     <option value="Terminée">Terminée</option>
                     <option value="En attente">En attente</option>
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700">Utilisateur</label>
-                <select name="user_id" class="w-full border rounded px-4 py-2" required>
-                    <option value="">Sélectionner un utilisateur</option>
-                    @foreach ($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
                 </select>
             </div>
 

@@ -1,53 +1,49 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Parcelle;
-use App\Models\Intervention;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\View;
+
 class RapportController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
     public function rapportInterventions(Parcelle $parcelle, Request $request)
     {
-        // Vérifier si l'utilisateur a accès à cette parcelle
+        // ✅ Contrôle d'accès
         if (Auth::user()->role->nom_role !== 'admin' || $parcelle->user_id !== Auth::id()) {
-            return response()->json(['message' => 'Accès non autorisé'], 403);
+            return redirect()->route('dashboard')->with('error', 'Accès refusé.');
         }
 
-        // Récupérer les paramètres de filtrage
-        $dateDebut = $request->input('date_debut') ? Carbon::parse($request->input('date_debut')) : Carbon::now()->startOfMonth();
-        $dateFin = $request->input('date_fin') ? Carbon::parse($request->input('date_fin')) : Carbon::now();
+        // 📅 Récupération de la période
+        $dateDebut = $request->input('date_debut') 
+            ? Carbon::parse($request->input('date_debut')) 
+            : Carbon::now()->startOfMonth();
 
-        // Récupérer les interventions avec leurs relations
+        $dateFin = $request->input('date_fin') 
+            ? Carbon::parse($request->input('date_fin')) 
+            : Carbon::now();
+
+        // 📦 Chargement des interventions liées à la parcelle
         $interventions = $parcelle->interventions()
             ->with(['typeIntervention', 'imprevus'])
             ->whereBetween('date_intervention', [$dateDebut, $dateFin])
             ->orderBy('date_intervention', 'desc')
             ->get();
 
-        // Calculer les statistiques
+        // 📊 Statistiques
         $statistiques = [
             'total_interventions' => $interventions->count(),
             'interventions_planifiees' => $interventions->where('statut', 'planifiée')->count(),
             'interventions_terminees' => $interventions->where('statut', 'terminée')->count(),
             'interventions_annulees' => $interventions->where('statut', 'annulée')->count(),
-            'total_imprevus' => $interventions->sum(function ($intervention) {
-                return $intervention->imprevus->count();
-            }),
+            'total_imprevus' => $interventions->sum(fn($i) => $i->imprevus->count()),
             'cout_total' => $interventions->sum('cout'),
             'duree_totale' => $interventions->sum('duree')
         ];
 
-        // Préparer les données pour la vue
+        // 📄 Données à envoyer à la vue
         $data = [
             'parcelle' => $parcelle,
             'periode' => [
@@ -58,13 +54,10 @@ class RapportController extends Controller
             'interventions' => $interventions
         ];
 
-        // Générer le PDF
-        $pdf = PDF::loadView('rapports.interventions', $data);
+        // 📥 Génération du PDF
+        $pdf = PDF::loadView('rapports.interventions', $data)->setPaper('a4', 'portrait');
 
-        // Configurer le PDF
-        $pdf->setPaper('a4', 'portrait');
-
-        // Retourner le PDF pour téléchargement
+        // 📎 Téléchargement
         return $pdf->download('rapport-interventions-' . $parcelle->nom_parcelle . '.pdf');
     }
 }

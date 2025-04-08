@@ -10,7 +10,7 @@ class Imprevu extends Model
 {
 use HasFactory;
 
-    protected $fillable = ['description', 'intervention_id'];
+    protected $fillable = ['description', 'intervention_id', 'user_id'];
 
     public function intervention()
     {
