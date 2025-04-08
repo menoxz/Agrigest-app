@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
@@ -18,11 +18,10 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'id' => 2,
-                'name' => 'john doe',
-                'email' => 'johndoe@example.com',
+                'name' => 'lasmid',
+                'email' => 'lasmid@example.com',
                 'email_verified_at' => Carbon::now(),
-                'password' => Hash::make('passwordTest'),
+                'password' => Hash::make('passwordlasmid'), // password
                 'remember_token' => Str::random(10),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

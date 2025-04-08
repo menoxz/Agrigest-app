@@ -11,10 +11,16 @@ class TypeIntervention extends Model
 {
 use HasFactory;
     protected $table='type_interventions';
-    protected $fillable = ['libelle'];
+    protected $fillable = ['libelle', 'user_id'];
 
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
     }
+    // TypeIntervention.php
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }

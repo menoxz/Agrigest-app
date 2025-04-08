@@ -58,6 +58,7 @@
 <script>
     $(document).ready( function () {
         $('#parcelleTable').DataTable();
+        
     });
 </script>
 @endsection

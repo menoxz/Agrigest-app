@@ -6,6 +6,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypeCultureController;
 use App\Http\Controllers\ParcelleController;
 use App\Http\Controllers\TypeInterventionController;
+use App\Http\Controllers\RapportController;
+use App\Http\Controllers\StatistiqueController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('intervention', InterventionController::class);
     Route::resource('imprevu', ImprevuController::class);
 
+  
+    // Route pour le rapport des interventions
+    Route::get('/rapport/parcelle/{parcelle}', [RapportController::class, 'rapportInterventions'])
+    ->name('rapport.parcelle')
+    ->middleware('auth');
+    // Route pour afficher les statistiques globales des parcelles
+    Route::get('/statistiques/globales', [StatistiqueController::class, 'afficherStatistique'])->name('statistiques.globales');
 });
 
 

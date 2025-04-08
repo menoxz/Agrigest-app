@@ -55,17 +55,6 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700">Utilisateur</label>
-                <select name="user_id" class="w-full border rounded px-4 py-2" required>
-                    @foreach ($users as $user)
-                        <option value="{{ $user->id }}" {{ $intervention->user_id == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-4">
                 <label class="block text-gray-700">Parcelle</label>
                 <select name="parcelle_id" class="w-full border rounded px-4 py-2" required>
                     @foreach ($parcelles as $parcelle)
@@ -86,18 +75,6 @@
                     @endforeach
                 </select>
             </div>
-
-            {{-- <div class="mb-4">
-                <label class="block text-gray-700">Imprévu associé</label>
-                <select name="imprevu_id" class="w-full border rounded px-4 py-2" required>
-                    @foreach ($imprevus as $imprevu)
-                        <option value="{{ $imprevu->id }}" {{ $intervention->imprevu_id == $imprevu->id ? 'selected' : '' }}>
-                            {{ $imprevu->description }}
-                        </option>
-                    @endforeach
-                </select>
-            </div> --}}
-
             <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded-md">Modifier</button>
         </form>
     </div>
