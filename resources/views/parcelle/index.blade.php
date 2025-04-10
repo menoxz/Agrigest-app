@@ -37,14 +37,24 @@
                 <td class="border px-4 py-2">{{ $parcelle->typeCulture->libelle }}</td>
                 <td class="border px-4 py-2">{{ $parcelle->date_plantation }}</td>
                 <td class="border px-4 py-2">{{ $parcelle->statut }}</td>
-                <td class="border px-4 py-2">
-                    <a href="{{ route('parcelle.edit', $parcelle->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded">Modifier</a>
+                <td class="border px-4 py-2 flex gap-2">
+                    <a href="{{ route('parcelle.edit', $parcelle->id) }}"
+                       class="flex items-center justify-center bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600 transition"
+                       title="Modifier">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                
                     <form action="{{ route('parcelle.destroy', $parcelle->id) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-red-500 ml-2" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
+                        <button type="submit"
+                                class="flex items-center justify-center text-red-500 p-2 border border-red-500 rounded hover:bg-red-100 transition"
+                                onclick="return confirm('Confirmer la suppression ?')" title="Supprimer">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </form>
                 </td>
+                
             </tr>
             @endforeach
         </tbody>
