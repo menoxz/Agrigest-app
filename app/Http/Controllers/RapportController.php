@@ -12,7 +12,7 @@ class RapportController extends Controller
     public function rapportInterventions(Parcelle $parcelle, Request $request)
     {
         // ✅ Contrôle d'accès
-        if (Auth::user()->role->nom_role !== 'admin' || $parcelle->user_id !== Auth::id()) {
+        if (Auth::user()->role->nom_role !== 'agriculteur' || $parcelle->user_id !== Auth::id()) {
             return redirect()->route('dashboard')->with('error', 'Accès refusé.');
         }
 
@@ -32,6 +32,16 @@ class RapportController extends Controller
             ->orderBy('date_intervention', 'desc')
             ->get();
 
+
+        // 🔄 Récupérer toutes les parcelles avec interventions 
+        // $parcelles = $user->parcelles()
+        // ->with(['interventions' => function ($query) use ($dateDebut, $dateFin) {
+        //     $query->with(['typeIntervention', 'imprevus'])
+        //           ->whereBetween('date_intervention', [$dateDebut, $dateFin])
+        //           ->orderBy('date_intervention', 'desc');
+        // }])
+        // ->get();
+
         // 📊 Statistiques
         $statistiques = [
             'total_interventions' => $interventions->count(),
@@ -45,7 +55,7 @@ class RapportController extends Controller
 
         // 📄 Données à envoyer à la vue
         $data = [
-            'parcelle' => $parcelle,
+            'parcelles' => $parcelles,
             'periode' => [
                 'debut' => $dateDebut->format('Y-m-d'),
                 'fin' => $dateFin->format('Y-m-d')
