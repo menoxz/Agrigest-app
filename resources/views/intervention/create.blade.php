@@ -26,6 +26,10 @@
                 <label class="block text-gray-700">Date d'intervention</label>
                 <input type="date" name="date_intervention" class="w-full border rounded px-4 py-2" required>
             </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Date de fin</label>
+                <input type="date" name="date_fin" class="w-full border rounded px-4 py-2">
+            </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700">Description</label>
@@ -65,15 +69,7 @@
                 </select>
             </div>
 
-            {{-- <div class="mb-4">
-                <label class="block text-gray-700">Imprévu associé</label>
-                <select name="imprevu_id" class="w-full border rounded px-4 py-2" required>
-                    <option value="">Sélectionner un imprévu</option>
-                    @foreach ($imprevus as $imprevu)
-                        <option value="{{ $imprevu->id }}">{{ $imprevu->description }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
+           
 
             <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md">Ajouter</button>
         </form>
