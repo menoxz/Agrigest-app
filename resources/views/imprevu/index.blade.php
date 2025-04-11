@@ -36,12 +36,12 @@
                             <i class="bi bi-pencil-square"></i>
                         </a>
                     
-                        <form action="{{ route('imprevu.destroy', $imprevu->id) }}" method="POST" class="inline">
+                        <form action="{{ route('imprevu.destroy', $imprevu->id) }}" method="POST" class="inline delete-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
-                                    class="flex items-center justify-center text-red-500 p-2 border border-red-500 rounded hover:bg-red-100 transition"
-                                    onclick="return confirm('Confirmer la suppression ?')" title="Supprimer">
+                            <button type="button"
+                                    class="flex items-center justify-center text-red-500 p-2 border border-red-500 rounded hover:bg-red-100 transition delete-btn"
+                                    title="Supprimer">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
