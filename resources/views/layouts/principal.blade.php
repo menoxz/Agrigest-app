@@ -12,6 +12,8 @@
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <title>@yield('title', 'Dashboard')</title>
 
@@ -93,6 +95,53 @@
             document.querySelector(".sidebar").classList.toggle("hidden");
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
 
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.closest('form');
+
+                    Swal.fire({
+                        title: 'Confirmer la suppression ?',
+                        text: "Cette action est irréversible.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler',
+                        background: '#ffffff',
+                        customClass: {
+                            popup: 'rounded-lg shadow-lg',
+                            title: 'text-lg font-semibold text-gray-800',
+                            htmlContainer: 'text-sm text-gray-600',
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Afficher un message de succès si présent dans la session
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: '{{ session('success') }}',
+                    background: '#ffffff',
+                    confirmButtonColor: '#3085d6',
+                    customClass: {
+                        popup: 'rounded-lg shadow-lg',
+                        title: 'text-lg font-semibold text-gray-800',
+                        htmlContainer: 'text-sm text-gray-600',
+                    }
+                });
+            @endif
+        });
+    </script>
 </body>
 </html>
