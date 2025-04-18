@@ -25,6 +25,13 @@ return new class extends Migration
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        DB::table('roles')->insert([
+            'nom_role' => 'admin',
+            'description' => 'Role accordé a un administrateur',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     public function down(): void

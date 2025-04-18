@@ -8,41 +8,55 @@ use App\Http\Controllers\ParcelleUserController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\GlobalStatistiquesController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Routes admin protégées
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+    Route::patch('/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::get('/parcelles', [AdminController::class, 'parcelles'])->name('parcelles');
+    Route::get('/parcelles/create', [AdminController::class, 'createParcelle'])->name('parcelles.create');
+    Route::post('/parcelles', [AdminController::class, 'storeParcelle'])->name('parcelles.store');
+    Route::get('/interventions', [AdminController::class, 'interventions'])->name('interventions');
+    Route::get('/interventions/create', [AdminController::class, 'createIntervention'])->name('interventions.create');
+    Route::post('/interventions', [AdminController::class, 'storeIntervention'])->name('interventions.store');
+    Route::get('/imprevus', [AdminController::class, 'imprevus'])->name('imprevus');
+    Route::get('/imprevus/create', [AdminController::class, 'createImprevu'])->name('imprevus.create');
+    Route::post('/imprevus', [AdminController::class, 'storeImprevu'])->name('imprevus.store');
+});
 
-Route::middleware('auth')->group(function () {
+// Routes pour les agriculteurs
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-Route::middleware(['auth', 'verified'])->group(function () {
+
     Route::resource('type-culture', TypeCultureController::class);
     Route::resource('type-intervention', TypeInterventionController::class);
     Route::resource('parcelle', ParcelleController::class);
 
-    // Routes pour la gestion des utilisateurs des parcelles
     Route::post('/parcelles/{parcelle}/assign-user', [ParcelleUserController::class, 'assignUser'])->name('parcelles.assign-user');
     Route::delete('/parcelles/{parcelle}/remove-user', [ParcelleUserController::class, 'removeUser'])->name('parcelles.remove-user');
     Route::get('/parcelles/{parcelle}/user', [ParcelleUserController::class, 'getParcelleUser'])->name('parcelles.get-user');
-
-    // Route pour le rapport des interventions
     Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
-
-    // Route pour afficher les statistiques des interventions
     Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
-
-    // Route pour afficher les statistiques globales des parcelles
     Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
 });
-
-
 
 require __DIR__.'/auth.php';
