@@ -4,61 +4,59 @@
 
 @section('content')
 
-<div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl text-white font-bold mb-4">Liste des Parcelles</h1>
-    <a href="{{ route('parcelle.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 inline-block">
-        Ajouter une nouvelle parcelle
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl text-green-800 font-bold">🌾 Mes parcelles</h1>
+    <a href="{{ route('parcelle.create') }}"
+       class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-md shadow">
+        ➕ Ajouter une parcelle
     </a>
-
 </div>
 
-    @if(session('success'))
-        <div class="bg-green-500 text-white p-3 rounded-md mb-4">
-            {{ session('success') }}
+@if(session('success'))
+    <div class="bg-green-100 text-green-800 border border-green-400 px-4 py-3 rounded mb-6 shadow-sm">
+        {{ session('success') }}
+    </div>
+@endif
+
+<!-- Grille responsive -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    @forelse($parcelles as $parcelle)
+        <div class="bg-white rounded-lg shadow-md p-5 border-l-4 border-green-500 hover:shadow-lg transition">
+            <div class="flex justify-between items-start mb-3">
+                <h2 class="text-xl font-bold text-green-800">{{ $parcelle->nom_parcelle }}</h2>
+                <span class="text-sm px-2 py-1 rounded-full 
+                    @if($parcelle->statut === 'En culture') bg-green-100 text-green-800 
+                    @elseif($parcelle->statut === 'Récoltée') bg-yellow-100 text-yellow-800 
+                    @else bg-gray-100 text-gray-800 
+                    @endif">
+                    {{ $parcelle->statut }}
+                </span>
+            </div>
+
+            <p><span class="font-semibold">🌱 Type :</span> {{ $parcelle->typeCulture->libelle }}</p>
+            <p><span class="font-semibold">📐 Superficie :</span> {{ $parcelle->superficie }} ha</p>
+            <p><span class="font-semibold">📅 Plantation :</span> {{ \Carbon\Carbon::parse($parcelle->date_plantation)->format('d/m/Y') }}</p>
+
+            <div class="flex justify-end gap-2 mt-4">
+                <a href="{{ route('parcelle.edit', $parcelle->id) }}"
+                   class="text-yellow-600 hover:text-yellow-800 px-3 py-1 border border-yellow-400 rounded text-sm flex items-center gap-1">
+                    ✏️ Modifier
+                </a>
+
+                <form action="{{ route('parcelle.destroy', $parcelle->id) }}" method="POST" class="inline delete-form">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button"
+                            class="flex items-center justify-center text-red-500 p-2 border border-red-500 rounded hover:bg-red-100 transition delete-btn"
+                             title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
         </div>
-    @endif
-<div class="bg-white p-4 rounded-md shadow-md">
-    <table id="parcelleTable" class="w-full text-left">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="border px-4 py-2">Nom</th>
-                <th class="border px-4 py-2">Superficie</th>
-                <th class="border px-4 py-2">Type Culture</th>
-                <th class="border px-4 py-2">Date Plantation</th>
-                <th class="border px-4 py-2">Statut</th>
-                <th class="border px-4 py-2">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($parcelles as $parcelle)
-            <tr class="bg-white">
-                <td class="border px-4 py-2">{{ $parcelle->nom_parcelle }}</td>
-                <td class="border px-4 py-2">{{ $parcelle->superficie }} ha</td>
-                <td class="border px-4 py-2">{{ $parcelle->typeCulture->libelle }}</td>
-                <td class="border px-4 py-2">{{ $parcelle->date_plantation }}</td>
-                <td class="border px-4 py-2">{{ $parcelle->statut }}</td>
-                <td class="border px-4 py-2">
-                    <a href="{{ route('parcelle.edit', $parcelle->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded">Modifier</a>
-                    <form action="{{ route('parcelle.destroy', $parcelle->id) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-500 ml-2" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    @empty
+        <p class="text-gray-500 col-span-3 text-center">Aucune parcelle enregistrée.</p>
+    @endforelse
 </div>
-<!-- Ajout de jQuery et DataTables -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
 
-<script>
-    $(document).ready( function () {
-        $('#parcelleTable').DataTable();
-        
-    });
-</script>
 @endsection
