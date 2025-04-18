@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\ImprevuController;
+use App\Http\Controllers\InterventionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypeCultureController;
 use App\Http\Controllers\ParcelleController;
 use App\Http\Controllers\TypeInterventionController;
-use App\Http\Controllers\ParcelleUserController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\GlobalStatistiquesController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StatistiqueController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('type-culture', TypeCultureController::class);
     Route::resource('type-intervention', TypeInterventionController::class);
     Route::resource('parcelle', ParcelleController::class);
+    Route::resource('intervention', InterventionController::class);
+    Route::resource('imprevu', ImprevuController::class);
+
 
     Route::post('/parcelles/{parcelle}/assign-user', [ParcelleUserController::class, 'assignUser'])->name('parcelles.assign-user');
     Route::delete('/parcelles/{parcelle}/remove-user', [ParcelleUserController::class, 'removeUser'])->name('parcelles.remove-user');
@@ -57,6 +62,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
     Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
     Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
+  
+    // Route pour le rapport des interventions
+    Route::get('/rapport/parcelle/{parcelle}', [RapportController::class, 'rapportInterventions'])
+    ->name('rapport.parcelle')
+    ->middleware('auth');
+    // Route pour afficher les statistiques globales des parcelles
+    Route::get('/statistiques/globales', [StatistiqueController::class, 'afficherStatistique'])->name('statistiques.globales');
 });
 
 require __DIR__.'/auth.php';

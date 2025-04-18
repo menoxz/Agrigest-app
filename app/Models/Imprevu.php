@@ -10,10 +10,10 @@ class Imprevu extends Model
 {
 use HasFactory;
 
-    protected $fillable = ['description'];
+    protected $fillable = ['description', 'intervention_id', 'user_id'];
 
-    public function imprevus()
+    public function intervention()
     {
-        return $this->hasMany(Intervention::class);
+        return $this->belongsTo(Intervention::class);
     }
 }

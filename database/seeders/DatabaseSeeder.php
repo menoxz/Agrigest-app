@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -21,6 +22,10 @@ class DatabaseSeeder extends Seeder
             'role_id' => 2, // ID du rôle admin
             'created_at' => now(),
             'updated_at' => now(),
+         $this->call([
+            UserSeeder::class,
+            ParcelleInterventionSeeder::class,
+
         ]);
     }
 }

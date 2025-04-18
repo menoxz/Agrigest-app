@@ -36,7 +36,7 @@
             <div class="mb-4">
                 <label class="block text-gray-700">Type de culture</label>
                 <select name="type_culture_id" class="w-full border rounded px-4 py-2" required>
-                    @foreach ($typesCultures as $type)
+                    @foreach ($typeCulture as $type)
                         <option value="{{ $type->id }}" {{ $parcelle->type_culture_id == $type->id ? 'selected' : '' }}>
                             {{ $type->libelle }}
                         </option>
