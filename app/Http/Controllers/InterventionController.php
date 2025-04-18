@@ -48,6 +48,16 @@ class InterventionController extends Controller
         'statut_intervention' => 'required|string',
         'parcelle_id' => 'required|exists:parcelles,id',
         'type_intervention_id' => 'required|exists:type_interventions,id',
+    ],
+    [
+        'parcelle_id.exists' => 'La parcelle sélectionnée n\'existe pas.',
+        'type_intervention_id.exists' => 'Le type d\'intervention sélectionné n\'existe pas.',
+        'date_fin.after_or_equal' => 'La date de fin doit être après ou égale à la date d\'intervention.',
+        'statut_intervention.required' => 'Le statut de l\'intervention est requis.',
+        'description.required' => 'La description est requise.',
+        'qte_produit.required' => 'La quantité de produit est requise.',
+        'qte_produit.numeric' => 'La quantité de produit doit être un nombre.',
+        'date_intervention.required' => 'La date d\'intervention est requise.',
     ]);
 
     // ✅ Vérifier que la parcelle appartient bien à l'utilisateur
