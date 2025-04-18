@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'status'
     ];
 
     /**
@@ -45,4 +48,38 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function interventions()
+    {
+        return $this->hasMany(Intervention::class);
+    }
+
+    public function parcelles()
+    {
+        return $this->hasMany(Parcelle::class);
+    }
+
+    //ajout
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (!$user->role_id) {
+                $role_agriculteur = Role::where('nom_role', 'agriculteur')->first();
+                $user->role_id = $role_agriculteur ? $role_agriculteur->id : null;
+            }
+        });
+    }
+
+    public function isActive()
+    {
+        return $this->status;
+    }
+
 }

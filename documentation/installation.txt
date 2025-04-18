@@ -1,0 +1,97 @@
+# Guide d'installation de l'application Agrigest
+
+Ce document explique comment installer et configurer correctement l'application Agrigest, y compris son système d'authentification Laravel Breeze.
+
+## 1. Cloner le projet
+
+```
+git clone <url-du-repo> agrigest
+cd agrigest
+```
+
+## 2. Construction et démarrage des conteneurs Docker
+
+```
+docker-compose up -d --build
+```
+
+Cette commande va créer et démarrer les conteneurs suivants :
+- agrigest-app : Application PHP Laravel
+- agrigest-nginx : Serveur web Nginx
+- agrigest-db : Base de données MySQL
+- agrigest-phpmyadmin : Interface d'administration de la base de données (optionnel)
+
+## 3. Installation de Laravel Breeze
+
+En raison des problèmes d'interactivité dans l'environnement Docker, Breeze doit être installé après le démarrage des conteneurs avec les commandes suivantes :
+
+```
+# Installation de Laravel Breeze
+docker exec -it agrigest-app composer require laravel/breeze --dev
+
+# Installation des fichiers Breeze avec l'interface Blade
+docker exec -it agrigest-app php artisan breeze:install blade --no-interaction
+
+# Installation des dépendances npm et compilation des assets
+docker exec -it agrigest-app npm install
+docker exec -it agrigest-app npm run build
+```
+
+## 4. Configuration de la base de données
+
+```
+# Exécution des migrations
+docker exec -it agrigest-app php artisan migrate
+
+# Nettoyage des caches
+docker exec -it agrigest-app php artisan optimize:clear
+```
+
+## 5. Vérification de l'installation
+
+1. Accédez à l'application depuis votre navigateur :
+   - Application : http://localhost:8000
+   - PhpMyAdmin : http://localhost:8080 (utilisateur: agrigest, mot de passe: agrigest_password)
+
+2. Testez les fonctionnalités d'authentification :
+   - Inscription : http://localhost:8000/register
+   - Connexion : http://localhost:8000/login
+
+## 6. Règles de validation des mots de passe
+
+Une règle de validation personnalisée a été implémentée pour les mots de passe. Tous les mots de passe doivent :
+- Comporter au moins 8 caractères
+- Contenir au moins un chiffre
+
+## 7. Résolution des problèmes courants
+
+### Problème : Les contrôleurs d'authentification n'existent pas
+
+Si vous rencontrez cette erreur : `Target class [App\Http\Controllers\Auth\RegisteredUserController] does not exist`
+
+**Solution :** Exécutez la commande d'installation de Breeze manuellement :
+```
+docker exec -it agrigest-app php artisan breeze:install blade --no-interaction
+docker exec -it agrigest-app php artisan optimize:clear
+```
+
+### Problème : Les assets CSS/JS ne sont pas compilés
+
+**Solution :** Exécutez les commandes npm :
+```
+docker exec -it agrigest-app npm install
+docker exec -it agrigest-app npm run build
+```
+
+### Problème : Erreurs de base de données
+
+**Solution :** Réinitialisez la base de données :
+```
+docker exec -it agrigest-app php artisan migrate:fresh
+```
+
+## 8. Notes importantes
+
+- **Ne pas modifier le Dockerfile** pour tenter d'installer Breeze directement lors de la construction du conteneur. Cela provoque des erreurs en mode non-interactif.
+- Après chaque modification des assets frontend, exécutez `npm run build` pour recompiler les fichiers CSS/JS.
+- Pour les environnements de production, définissez `APP_ENV=production` et `APP_DEBUG=false` dans le fichier `.env`.
