@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
             'role_id' => 2, // ID du rôle admin
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
-
-        $this->call([
+              ]);
+        // Appel des autres seeders
+         $this->call([
             UserSeeder::class,
             ParcelleInterventionSeeder::class,
         ]);

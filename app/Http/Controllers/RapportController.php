@@ -45,17 +45,15 @@ class RapportController extends Controller
         // 📊 Statistiques
         $statistiques = [
             'total_interventions' => $interventions->count(),
-            'interventions_planifiees' => $interventions->where('statut', 'planifiée')->count(),
-            'interventions_terminees' => $interventions->where('statut', 'terminée')->count(),
-            'interventions_annulees' => $interventions->where('statut', 'annulée')->count(),
+            'interventions_attente' => $interventions->where('statut_intervention', 'En attente')->count(),
+            'interventions_terminees' => $interventions->where('statut_intervention', 'Terminée')->count(),
+            'interventions_actuel' => $interventions->where('statut_intervention', 'En cours')->count(),
             'total_imprevus' => $interventions->sum(fn($i) => $i->imprevus->count()),
-            'cout_total' => $interventions->sum('cout'),
-            'duree_totale' => $interventions->sum('duree')
         ];
 
         // 📄 Données à envoyer à la vue
         $data = [
-            'parcelles' => $parcelles,
+            'parcelle' => $parcelle,
             'periode' => [
                 'debut' => $dateDebut->format('Y-m-d'),
                 'fin' => $dateFin->format('Y-m-d')
