@@ -56,12 +56,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('imprevu', ImprevuController::class);
 
 
-    Route::post('/parcelles/{parcelle}/assign-user', [ParcelleUserController::class, 'assignUser'])->name('parcelles.assign-user');
-    Route::delete('/parcelles/{parcelle}/remove-user', [ParcelleUserController::class, 'removeUser'])->name('parcelles.remove-user');
-    Route::get('/parcelles/{parcelle}/user', [ParcelleUserController::class, 'getParcelleUser'])->name('parcelles.get-user');
-    Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
-    Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
-    Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
+    //    Route::post('/parcelles/{parcelle}/assign-user', [ParcelleUserController::class, 'assignUser'])->name('parcelles.assign-user');
+    //    Route::delete('/parcelles/{parcelle}/remove-user', [ParcelleUserController::class, 'removeUser'])->name('parcelles.remove-user');
+      //  Route::get('/parcelles/{parcelle}/user', [ParcelleUserController::class, 'getParcelleUser'])->name('parcelles.get-user');
+    //    Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
+      //  Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
+      //  Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
 
     // Route pour le rapport des interventions
     Route::get('/rapport/parcelle/{parcelle}', [RapportController::class, 'rapportInterventions'])
