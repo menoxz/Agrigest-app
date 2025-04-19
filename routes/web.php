@@ -62,13 +62,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/parcelles/{parcelle}/rapport', [RapportController::class, 'rapportInterventions'])->name('parcelles.rapport');
     Route::get('/parcelles/{parcelle}/statistiques', [StatistiquesController::class, 'afficherStatistiques'])->name('parcelles.statistiques');
     Route::get('/statistiques', [GlobalStatistiquesController::class, 'afficherStatistiquesGlobales'])->name('statistiques.globales');
-  
+
     // Route pour le rapport des interventions
     Route::get('/rapport/parcelle/{parcelle}', [RapportController::class, 'rapportInterventions'])
     ->name('rapport.parcelle')
     ->middleware('auth');
     // Route pour afficher les statistiques globales des parcelles
-    Route::get('/statistiques/globales', [StatistiqueController::class, 'afficherStatistique'])->name('statistiques.globales');
+    Route::get('/statistiques/globales', [StatistiqueController::class, 'afficherStatistique'])->name('statistiques.globales.detail');
 });
 
 require __DIR__.'/auth.php';

@@ -11,6 +11,8 @@ services:
       - ./:/var/www
     networks:
       - agrigest
+    depends_on:
+      - redis
 
   nginx:
     image: nginx:alpine
@@ -37,11 +39,17 @@ services:
       - dbdata:/var/lib/mysql
     ports:
       - "3306:3306"
-
     networks:
-    
       - agrigest
-      
+
+  redis:
+    image: redis:alpine
+    container_name: agrigest-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - agrigest
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

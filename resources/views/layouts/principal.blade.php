@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -33,7 +33,7 @@
         </div>
 
         <div class="mt-6">
-            <a href="{{ route('statistiques.globales') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
+            <a href="{{ route('statistiques.globales.detail') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-house-door-fill"></i>
                 <span>Dashboard</span>
             </a>
@@ -59,7 +59,7 @@
                 <i class="bi bi-bug-fill"></i>
                 <span>Imprevus</span>
             </a>
-          
+
         </div>
 
         <div class="mt-10 border-t border-green-600 pt-5">
@@ -71,7 +71,7 @@
                 </button>
             </form>
         </div>
-        
+
     </div>
 
     <!-- Contenu principal -->
