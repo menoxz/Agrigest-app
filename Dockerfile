@@ -10,13 +10,21 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    redis-server
 
 # Nettoyage du cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Installation des extensions PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd opcache
+
+# Configuration de OPcache
+RUN docker-php-ext-enable opcache
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+# Installation de Redis
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -31,8 +39,8 @@ COPY . /var/www
 RUN chown -R www-data:www-data /var/www
 RUN git config --global --add safe.directory /var/www
 
-# Note: On n'installe PAS Breeze dans le Dockerfile car cela crée des problèmes en mode non-interactif
-# Breeze sera installé via une commande après le démarrage du conteneur
+# Optimisation de Composer
+RUN composer install --optimize-autoloader --no-dev
 
 # Exposition du port 9000
 EXPOSE 9000
