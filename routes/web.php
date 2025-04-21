@@ -42,6 +42,10 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix
 // Routes pour les agriculteurs
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
+        // Redirection conditionnelle basée sur le rôle
+        if (auth()->user()->role && auth()->user()->role->nom_role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
         return view('dashboard');
     })->name('dashboard');
 
