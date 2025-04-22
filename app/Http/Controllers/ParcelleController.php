@@ -32,7 +32,7 @@ class ParcelleController extends Controller
     public function create()
     {
         $parcelle = Parcelle::all();
-        $typeCulture = TypeCulture::where('user_id', Auth::id())->get();
+        $typeCulture = TypeCulture::all();
         return view('parcelle.create', compact('parcelle', 'typeCulture'));
     }
 
