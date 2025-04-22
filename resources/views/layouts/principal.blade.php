@@ -46,14 +46,14 @@
                 <i class="bi bi-house-door-fill"></i>
                 <span>Statistiques</span>
             </a>
-            <a href="{{ route('type-culture.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
+            <!-- <a href="{{ route('type-culture.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-tree"></i>
                 <span>Type Culture</span>
             </a>
             <a href="{{ route('type-intervention.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-gear"></i>
                 <span>Type Intervention</span>
-            </a>
+            </a> -->
             <a href="{{ route('parcelle.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-map"></i>
                 <span>Parcelles</span>

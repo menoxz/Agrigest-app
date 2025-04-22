@@ -70,7 +70,7 @@ class ParcelleController extends Controller
     public function edit(Parcelle $parcelle)
     {
         $this->authorizeParcelle($parcelle); // 🔐 Check propriétaire
-        $typeCulture = TypeCulture::where('user_id', Auth::id())->get();
+        $typeCulture = TypeCulture::all();
 
         return view('parcelle.edit', compact('parcelle', 'typeCulture'));
     }
