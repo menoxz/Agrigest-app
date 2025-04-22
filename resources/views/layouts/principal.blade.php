@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts -->
@@ -22,14 +22,14 @@
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Alpine.js via CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="bg-green-100 flex">
@@ -46,14 +46,7 @@
                 <i class="bi bi-house-door-fill"></i>
                 <span>Statistiques</span>
             </a>
-            <!-- <a href="{{ route('type-culture.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
-                <i class="bi bi-tree"></i>
-                <span>Type Culture</span>
-            </a>
-            <a href="{{ route('type-intervention.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
-                <i class="bi bi-gear"></i>
-                <span>Type Intervention</span>
-            </a> -->
+
             <a href="{{ route('parcelle.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-map"></i>
                 <span>Parcelles</span>
