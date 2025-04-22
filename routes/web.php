@@ -78,9 +78,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Route::resource('type-culture', TypeCultureController::class);
-    // Route::resource('type-intervention', TypeInterventionController::class);
+    // Routes pour les parcelles
+    Route::get('/parcelle/map', [ParcelleController::class, 'map'])->name('parcelle.map.all');
+    Route::get('/parcelle/{parcelle}/map', [ParcelleController::class, 'map'])->name('parcelle.map');
     Route::resource('parcelle', ParcelleController::class);
+
     Route::resource('intervention', InterventionController::class);
     Route::resource('imprevu', ImprevuController::class);
 

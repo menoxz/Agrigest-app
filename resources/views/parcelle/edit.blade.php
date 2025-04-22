@@ -58,6 +58,31 @@
                 </select>
             </div>
 
+            <div class="mb-6 border-t pt-4">
+                <h3 class="text-lg font-semibold mb-2">Localisation de la parcelle</h3>
+                <p class="text-sm text-gray-600 mb-4">Ces coordonnées serviront à afficher votre parcelle sur la carte.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700">Latitude</label>
+                        <input type="number" name="latitude" step="any" min="-90" max="90" value="{{ $parcelle->latitude }}" class="w-full border rounded px-4 py-2" placeholder="Ex: 48.856614">
+                        <p class="text-xs text-gray-500 mt-1">Entre -90 et 90 degrés</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700">Longitude</label>
+                        <input type="number" name="longitude" step="any" min="-180" max="180" value="{{ $parcelle->longitude }}" class="w-full border rounded px-4 py-2" placeholder="Ex: 2.3522219">
+                        <p class="text-xs text-gray-500 mt-1">Entre -180 et 180 degrés</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mt-2">
+                    <a href="https://www.latlong.net/" target="_blank" class="text-blue-500 hover:underline">
+                        Trouver les coordonnées sur une carte <i class="bi bi-box-arrow-up-right ml-1"></i>
+                    </a>
+                </p>
+            </div>
+
             <button type="submit" class="bg-yellow-500 text-white px-6 py-2 rounded-md">Modifier</button>
         </form>
     </div>

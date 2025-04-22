@@ -92,6 +92,9 @@
         </div>
     </div>
 
+    <!-- Scripts supplémentaires spécifiques à chaque page -->
+    @yield('additional_scripts')
+
     <script>
         function openSidebar() {
             document.querySelector(".sidebar").classList.toggle("hidden");
