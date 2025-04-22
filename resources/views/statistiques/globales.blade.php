@@ -43,17 +43,6 @@
             </div>
         </div>
 
-        <!-- Durée totale -->
-        <div class="bg-white shadow-md rounded-lg p-5 border-l-4 border-yellow-600">
-            <div class="flex items-center space-x-4">
-                <i class="bi bi-clock-fill text-3xl text-yellow-700"></i>
-                <div>
-                    <h2 class="text-gray-700 font-semibold">Durée totale</h2>
-                    <p class="text-2xl font-bold">{{ $statistiques['duree_totale'] ?? 0 }} h</p>
-                </div>
-            </div>
-        </div>        
-
         <!-- Moyenne interventions -->
         <div class="bg-white shadow-md rounded-lg p-5 border-l-4 border-indigo-600">
             <div class="flex items-center space-x-4">
