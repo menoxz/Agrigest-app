@@ -36,6 +36,15 @@
                             <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                                 {{ __('Utilisateurs') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.type-cultures')" :active="request()->routeIs('admin.type-cultures*')">
+                                {{ __('Types de Cultures') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.type-interventions')" :active="request()->routeIs('admin.type-interventions*')">
+                                {{ __('Types d\'Interventions') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.settings')">
+                                {{ __('Paramètres') }}
+                            </x-nav-link>
                             <!-- <x-nav-link :href="route('admin.parcelles')" :active="request()->routeIs('admin.parcelles*')">
                                 {{ __('Parcelles') }}
                             </x-nav-link>

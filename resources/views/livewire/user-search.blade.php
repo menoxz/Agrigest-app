@@ -75,7 +75,8 @@
                                         <button type="submit" class="ml-4 text-red-600 hover:text-red-900" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">Supprimer</button>
                                     </form>
                                 @else
-                                    <span class="text-gray-500">Actions non disponibles</span>
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                    <span class="ml-4 text-gray-500">Actions non disponibles</span>
                                 @endif
                             </td>
                         </tr>
