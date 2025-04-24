@@ -41,8 +41,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('/admin/dashboard');
         }
 
+        Tests-unitaires
         \Log::info('Redirecting user to user dashboard');
         return redirect()->intended('/dashboard');
+
     }
 
     /**
