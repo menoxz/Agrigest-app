@@ -50,11 +50,15 @@
 
                             <div class="col-span-6 sm:col-span-4">
                                 <label for="role_id" class="block text-sm font-medium text-gray-700">Rôle</label>
-                                <select name="role_id" id="role_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>{{ $role->nom_role }}</option>
+                                <select id="role_id" name="role_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" @if(Auth::id() == $user->id) disabled @endif>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>{{ $role->nom_role }}</option>
                                     @endforeach
                                 </select>
+                                @if(Auth::id() == $user->id)
+                                    <input type="hidden" name="role_id" value="{{ $user->role_id }}" />
+                                    <p class="text-sm text-gray-500 mt-1">Vous ne pouvez pas modifier votre propre rôle.</p>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -23,10 +23,19 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
               ]);
-        // Appel des autres seeders
-         $this->call([
-            UserSeeder::class,
-            ParcelleInterventionSeeder::class,
+        //création d'un agriculteur
+        DB::table('users')->insert([
+            'name' => 'Agriculteur',
+            'email' => 'agriuser@agrigest.com',
+            'password' => Hash::make('agriuser123'),
+            'role_id' => 1, // ID du rôle agriculteur
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
+        // Appel des autres seeders
+        //  $this->call([
+        //     UserSeeder::class,
+        //     ParcelleInterventionSeeder::class,
+        // ]);
     }
 }

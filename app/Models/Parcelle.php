@@ -10,12 +10,21 @@ class Parcelle extends Model
 {
  use HasFactory;
 
-    protected $fillable = ['nom_parcelle', 'superficie', 'date_plantation', 'statut', 'type_culture_id', 'user_id'];
+    protected $fillable = [
+        'nom_parcelle',
+        'superficie',
+        'date_plantation',
+        'statut',
+        'type_culture_id',
+        'user_id',
+        'latitude',
+        'longitude'
+    ];
 
     public function typeCulture()
-{
-    return $this->belongsTo(TypeCulture::class);
-}
+    {
+        return $this->belongsTo(TypeCulture::class);
+    }
 
     public function user()
     {
@@ -25,4 +34,11 @@ class Parcelle extends Model
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
-    }}
+    }
+
+    // Check if the parcel has location data
+    public function hasLocation()
+    {
+        return $this->latitude !== null && $this->longitude !== null;
+    }
+}

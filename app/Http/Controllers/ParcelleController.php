@@ -24,7 +24,24 @@ class ParcelleController extends Controller
         return view('parcelle.index', compact('parcelles'));
     }
 
+    /**
+     * Show the map of all parcelles or a specific one.
+     */
+    public function map(Parcelle $parcelle = null)
+    {
+        // Si un ID de parcelle est fourni, afficher la carte de cette parcelle
+        if ($parcelle) {
+            $this->authorizeParcelle($parcelle); // 🔐 Check propriétaire
+            return view('parcelle.map', compact('parcelle'));
+        }
 
+        // Sinon, afficher la carte de toutes les parcelles de l'utilisateur
+        $parcelles = Parcelle::with('typeCulture')
+            ->where('user_id', Auth::user()->id)
+            ->get();
+
+        return view('parcelle.map', compact('parcelles'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -32,7 +49,7 @@ class ParcelleController extends Controller
     public function create()
     {
         $parcelle = Parcelle::all();
-        $typeCulture = TypeCulture::where('user_id', Auth::id())->get();
+        $typeCulture = TypeCulture::all();
         return view('parcelle.create', compact('parcelle', 'typeCulture'));
     }
 
@@ -47,6 +64,8 @@ class ParcelleController extends Controller
             'date_plantation' => 'nullable|date',
             'statut' => 'required',
             'type_culture_id' => 'required|exists:type_cultures,id',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         Parcelle::create([
@@ -55,22 +74,32 @@ class ParcelleController extends Controller
             'type_culture_id' => $request->type_culture_id,
             'date_plantation' => $request->date_plantation,
             'statut' => $request->statut,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'user_id' => Auth::user()->id, // 👈 Associer à l'utilisateur connecté
         ]);
 
         return redirect()->route('parcelle.index')->with('success', 'Parcelle ajoutée avec succès.');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(Parcelle $parcelle)
+    {
+        $this->authorizeParcelle($parcelle); // 🔐 Check propriétaire
 
+        // Rediriger vers la carte de cette parcelle
+        return redirect()->route('parcelle.map', $parcelle);
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-
     public function edit(Parcelle $parcelle)
     {
         $this->authorizeParcelle($parcelle); // 🔐 Check propriétaire
-        $typeCulture = TypeCulture::where('user_id', Auth::id())->get();
+        $typeCulture = TypeCulture::all();
 
         return view('parcelle.edit', compact('parcelle', 'typeCulture'));
     }
@@ -85,16 +114,14 @@ class ParcelleController extends Controller
             'date_plantation' => 'nullable|date',
             'statut' => 'required',
             'type_culture_id' => 'required|exists:type_cultures,id',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         $parcelle->update($request->all());
 
         return redirect()->route('parcelle.index')->with('success', 'Parcelle mise à jour avec succès.');
     }
-
-
-
-
 
     public function destroy(Parcelle $parcelle)
     {
