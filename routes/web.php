@@ -20,28 +20,57 @@ Route::get('/', function () {
 // Routes admin protégées
 Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Gestion des utilisateurs
     Route::get('/users', [AdminController::class, 'users'])->name('users');
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
     Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
     Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
     Route::patch('/users/{user}/toggle-status', [AdminController::class, 'toggleStatus'])->name('users.toggle-status');
+
+    // Gestion des parcelles
     Route::get('/parcelles', [AdminController::class, 'parcelles'])->name('parcelles');
     Route::get('/parcelles/create', [AdminController::class, 'createParcelle'])->name('parcelles.create');
     Route::post('/parcelles', [AdminController::class, 'storeParcelle'])->name('parcelles.store');
+
+    // Gestion des interventions
     Route::get('/interventions', [AdminController::class, 'interventions'])->name('interventions');
     Route::get('/interventions/create', [AdminController::class, 'createIntervention'])->name('interventions.create');
     Route::post('/interventions', [AdminController::class, 'storeIntervention'])->name('interventions.store');
+
+    // Gestion des imprévus
     Route::get('/imprevus', [AdminController::class, 'imprevus'])->name('imprevus');
     Route::get('/imprevus/create', [AdminController::class, 'createImprevu'])->name('imprevus.create');
     Route::post('/imprevus', [AdminController::class, 'storeImprevu'])->name('imprevus.store');
+
+    // Gestion des types de cultures
+    Route::get('/type-cultures', [AdminController::class, 'typeCultures'])->name('type-cultures');
+    Route::get('/type-cultures/create', [AdminController::class, 'createTypeCulture'])->name('type-cultures.create');
+    Route::post('/type-cultures', [AdminController::class, 'storeTypeCulture'])->name('type-cultures.store');
+    Route::get('/type-cultures/{typeCulture}/edit', [AdminController::class, 'editTypeCulture'])->name('type-cultures.edit');
+    Route::put('/type-cultures/{typeCulture}', [AdminController::class, 'updateTypeCulture'])->name('type-cultures.update');
+    Route::delete('/type-cultures/{typeCulture}', [AdminController::class, 'deleteTypeCulture'])->name('type-cultures.delete');
+
+    // Gestion des types d'interventions
+    Route::get('/type-interventions', [AdminController::class, 'typeInterventions'])->name('type-interventions');
+    Route::get('/type-interventions/create', [AdminController::class, 'createTypeIntervention'])->name('type-interventions.create');
+    Route::post('/type-interventions', [AdminController::class, 'storeTypeIntervention'])->name('type-interventions.store');
+    Route::get('/type-interventions/{typeIntervention}/edit', [AdminController::class, 'editTypeIntervention'])->name('type-interventions.edit');
+    Route::put('/type-interventions/{typeIntervention}', [AdminController::class, 'updateTypeIntervention'])->name('type-interventions.update');
+    Route::delete('/type-interventions/{typeIntervention}', [AdminController::class, 'deleteTypeIntervention'])->name('type-interventions.delete');
+
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
 });
 
 // Routes pour les agriculteurs
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
+        // Redirection conditionnelle basée sur le rôle
+        if (auth()->user()->role && auth()->user()->role->nom_role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
         return view('dashboard');
     })->name('dashboard');
 
@@ -49,9 +78,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('type-culture', TypeCultureController::class);
-    Route::resource('type-intervention', TypeInterventionController::class);
+    // Routes pour les parcelles
+    Route::get('/parcelle/map', [ParcelleController::class, 'map'])->name('parcelle.map.all');
+    Route::get('/parcelle/{parcelle}/map', [ParcelleController::class, 'map'])->name('parcelle.map');
     Route::resource('parcelle', ParcelleController::class);
+
     Route::resource('intervention', InterventionController::class);
     Route::resource('imprevu', ImprevuController::class);
 

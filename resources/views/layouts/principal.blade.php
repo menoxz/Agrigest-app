@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts -->
@@ -15,12 +16,20 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <title>@yield('title', 'Dashboard')</title>
+    <title>{{ config('app.name', 'Agrigest') }} - @yield('title', 'Accueil')</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+
+    <!-- Alpine.js via CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="bg-green-100 flex">
@@ -35,16 +44,9 @@
         <div class="mt-6">
             <a href="{{ route('statistiques.globales.detail') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-house-door-fill"></i>
-                <span>Dashboard</span>
+                <span>Statistiques</span>
             </a>
-            <a href="{{ route('type-culture.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
-                <i class="bi bi-tree"></i>
-                <span>Type Culture</span>
-            </a>
-            <a href="{{ route('type-intervention.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
-                <i class="bi bi-gear"></i>
-                <span>Type Intervention</span>
-            </a>
+
             <a href="{{ route('parcelle.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-md hover:bg-green-700">
                 <i class="bi bi-map"></i>
                 <span>Parcelles</span>
@@ -89,6 +91,9 @@
             @yield('content')
         </div>
     </div>
+
+    <!-- Scripts supplémentaires spécifiques à chaque page -->
+    @yield('additional_scripts')
 
     <script>
         function openSidebar() {
