@@ -1,66 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AGRIGEST - Gestion Agricole
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Version](https://img.shields.io/badge/version-1.0.0-green)
+![PHP](https://img.shields.io/badge/PHP-8.2-blue)
+![Laravel](https://img.shields.io/badge/Laravel-10.x-red)
 
-## About Laravel
+## À propos d'Agrigest
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Agrigest est une application web de gestion agricole qui permet aux agriculteurs de suivre leurs parcelles, planifier leurs interventions et optimiser leur productivité. L'application offre une interface intuitive et des fonctionnalités avancées pour une gestion complète des exploitations agricoles.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fonctionnalités principales
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Interface Agriculteur
+- **Gestion des parcelles** : Création, modification et suppression de parcelles avec informations détaillées
+- **Cartographie** : Visualisation des parcelles sur une carte interactive grâce à Leaflet.js
+- **Gestion des interventions** : Planification et suivi des opérations sur les parcelles
+- **Suivi des imprévus** : Enregistrement des événements non planifiés affectant les cultures
+- **Statistiques** : Analyse détaillée des activités et performances
+- **Rapports PDF** : Génération de rapports d'interventions par parcelle
 
-## Learning Laravel
+### Interface Administrateur
+- **Tableau de bord** : Vue d'ensemble des statistiques globales du système
+- **Gestion des utilisateurs** : Ajout, modification, désactivation des comptes
+- **Gestion des types de cultures** : Configuration des cultures disponibles
+- **Gestion des types d'interventions** : Définition des types d'opérations agricoles
+- **Paramètres système** : Configuration globale de l'application
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Structure technique
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Architecture
+- Application basée sur **Laravel 10** avec une architecture MVC
+- Base de données **MySQL 8.0** pour le stockage des données
+- **Docker** pour l'environnement de développement et de déploiement
+- **Tailwind CSS** pour le design responsive
+- **Leaflet.js** pour les fonctionnalités cartographiques
+- **Livewire** pour les composants dynamiques
+- **DomPDF** pour la génération de rapports PDF
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Structure des données
+- **Utilisateurs** : Comptes agriculteurs et administrateurs avec rôles distincts
+- **Parcelles** : Unités agricoles avec géolocalisation
+- **Types de cultures** : Catalogue des cultures disponibles
+- **Interventions** : Opérations planifiées sur les parcelles
+- **Types d'interventions** : Catalogue des opérations possibles
+- **Imprévus** : Événements non planifiés liés aux interventions
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Prérequis
+- Docker et Docker Compose
+- PHP 8.2 ou supérieur
+- Composer
+- Node.js et NPM
 
-### Premium Partners
+### Procédure d'installation
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+1. Cloner le dépôt
+```bash
+git clone https://github.com/votre-repo/agrigest.git
+cd agrigest
+```
 
-## Contributing
+2. Copier le fichier d'environnement
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Démarrer les conteneurs Docker
+```bash
+docker-compose up -d
+```
 
-## Code of Conduct
+4. Installer les dépendances
+```bash
+docker exec agrigest-app composer install
+docker exec agrigest-app npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. Générer la clé d'application
+```bash
+docker exec agrigest-app php artisan key:generate
+```
 
-## Security Vulnerabilities
+6. Exécuter les migrations et les seeders
+```bash
+docker exec agrigest-app php artisan migrate --seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+7. Compiler les assets
+```bash
+docker exec agrigest-app npm run build
+```
 
-## License
+8. Accéder à l'application : http://localhost:8000
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Utilisation
+
+### Agriculteur
+- Connexion avec identifiants agriculteur
+- Création de parcelles et ajout de leurs coordonnées géographiques
+- Planification d'interventions sur les parcelles
+- Consultation des statistiques de l'exploitation
+- Génération de rapports PDF par parcelle
+
+### Administrateur
+- Connexion avec identifiants administrateur (admin@example.com / password)
+- Gestion des utilisateurs et attribution des rôles
+- Configuration des types de cultures et d'interventions
+- Analyse des statistiques globales du système
+
+## Tests
+
+L'application inclut des tests fonctionnels et unitaires :
+
+```bash
+docker exec agrigest-app php artisan test
+```
+
+## Problèmes courants et solutions
+
+### Connexion à la base de données
+Si vous rencontrez des problèmes de connexion à la base de données, vérifiez :
+- Que les conteneurs Docker sont bien démarrés
+- Que les variables d'environnement dans le fichier .env sont correctes
+- Que le service MySQL est accessible via le port 3306
+
+### Affichage des cartes
+Pour que les cartes fonctionnent correctement :
+- Les coordonnées (latitude, longitude) doivent être correctement renseignées
+- Une connexion internet est nécessaire pour charger les tuiles OpenStreetMap
+- Le JavaScript doit être activé dans le navigateur
+
+## Fonctionnalités à venir
+
+- Export des données au format CSV/Excel
+- Interface mobile responsive
+- Analyse prédictive des rendements
+- Intégration avec des capteurs IoT pour le suivi en temps réel
+- Module de gestion des stocks d'intrants
+
+## Contributeurs
+
+- Lux-Tech
+- GEKEMA
+- Veronique04
+- Isaacmazamesso
+
