@@ -30,7 +30,7 @@ class StatistiqueController extends Controller
         $totalInterventions = $interventions->count();
         $totalImprevus = $imprevus->count();
 
-        $parStatuts = $interventions->groupBy('statut')->map->count();
+        $parStatuts = $interventions->groupBy('statut_intervention')->map->count();
 
         $dureeTotale = $interventions->sum('duree');
         $coutTotal = $interventions->sum('cout');
