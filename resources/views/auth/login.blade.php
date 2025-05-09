@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login by Geek</title>
+  <title>Login</title>
+  <!-- Favicon -->
+  <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <style>
     * {
@@ -134,7 +138,7 @@
     .register-link p a:hover {
       text-decoration: underline;
     }
-    
+
   </style>
 </head>
 <body>
@@ -162,12 +166,12 @@
       </div>
 
       <!-- Remember Me -->
-      <div class="remember-forgot">
+      <!-- <div class="remember-forgot">
         <label><input id="remember_me" type="checkbox" name="remember">{{ __('se souvenir ') }}</label>
         @if (Route::has('password.request'))
           <a href="{{ route('password.request') }}">{{ __('Mot de passe oublier ?') }}</a>
         @endif
-      </div>
+      </div> -->
 
       <button type="submit" class="btn">{{ __('SE CONNECTER') }}</button>
 

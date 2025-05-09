@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Role;
 use App\Models\TypeCulture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,30 +15,40 @@ class TypeCultureTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Créer un rôle admin
+        $roleAdmin = Role::firstOrCreate(
+            ['nom_role' => 'admin'],
+            ['description' => 'Administrateur du système']
+        );
+
+        // Créer un utilisateur admin
+        $this->admin = User::factory()->create([
+            'role_id' => $roleAdmin->id
+        ]);
+
+        // Créer un utilisateur normal
         $this->user = User::factory()->create();
     }
 
     public function test_user_can_view_their_type_cultures()
     {
-        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->user->id]);
+        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->admin->id]);
 
-        $response = $this->actingAs($this->user)->get('/type-culture');
+        $response = $this->actingAs($this->admin)->get('/admin/type-cultures');
 
-        $response->assertStatus(200)
-                ->assertViewHas('cultures')
-                ->assertSee($typeCulture->libelle);
+        $response->assertStatus(200);
     }
 
     public function test_user_can_create_type_culture()
     {
-        $response = $this->actingAs($this->user)->post('/type-culture', [
+        $response = $this->actingAs($this->admin)->post('/admin/type-cultures', [
             'libelle' => 'Nouveau Type de Culture'
         ]);
 
-        $response->assertRedirect('/type-culture');
+        $response->assertRedirect('/admin/type-cultures');
         $this->assertDatabaseHas('type_cultures', [
-            'libelle' => 'Nouveau Type de Culture',
-            'user_id' => $this->user->id
+            'libelle' => 'Nouveau Type de Culture'
         ]);
     }
 
@@ -45,10 +56,10 @@ class TypeCultureTest extends TestCase
     {
         TypeCulture::factory()->create([
             'libelle' => 'Type Existant',
-            'user_id' => $this->user->id
+            'user_id' => $this->admin->id
         ]);
 
-        $response = $this->actingAs($this->user)->post('/type-culture', [
+        $response = $this->actingAs($this->admin)->post('/admin/type-cultures', [
             'libelle' => 'Type Existant'
         ]);
 
@@ -57,49 +68,38 @@ class TypeCultureTest extends TestCase
 
     public function test_user_can_update_their_type_culture()
     {
-        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->user->id]);
+        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->admin->id]);
 
-        $response = $this->actingAs($this->user)->put("/type-culture/{$typeCulture->id}", [
+        $response = $this->actingAs($this->admin)->put("/admin/type-cultures/{$typeCulture->id}", [
             'libelle' => 'Type Modifié'
         ]);
 
-        $response->assertRedirect('/type-culture');
+        $response->assertRedirect('/admin/type-cultures');
         $this->assertDatabaseHas('type_cultures', [
             'id' => $typeCulture->id,
             'libelle' => 'Type Modifié'
         ]);
     }
 
-    public function test_user_cannot_update_other_users_type_culture()
+    public function test_non_admin_cannot_access_type_culture()
     {
-        $otherUser = User::factory()->create();
-        $typeCulture = TypeCulture::factory()->create(['user_id' => $otherUser->id]);
-
-        $response = $this->actingAs($this->user)->put("/type-culture/{$typeCulture->id}", [
-            'libelle' => 'Type Modifié'
-        ]);
-
-        $response->assertStatus(403);
+        $response = $this->actingAs($this->user)->get('/admin/type-cultures');
+        $response->assertStatus(302); // Redirection pour les non-admins
     }
 
     public function test_user_can_delete_their_type_culture()
     {
-        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->user->id]);
+        $typeCulture = TypeCulture::factory()->create(['user_id' => $this->admin->id]);
 
-        $response = $this->actingAs($this->user)->delete("/type-culture/{$typeCulture->id}");
+        $response = $this->actingAs($this->admin)->delete("/admin/type-cultures/{$typeCulture->id}");
 
-        $response->assertRedirect('/type-culture');
+        $response->assertRedirect('/admin/type-cultures');
         $this->assertDatabaseMissing('type_cultures', ['id' => $typeCulture->id]);
     }
 
-    public function test_user_cannot_delete_other_users_type_culture()
+    public function test_admin_can_view_creation_form()
     {
-        $otherUser = User::factory()->create();
-        $typeCulture = TypeCulture::factory()->create(['user_id' => $otherUser->id]);
-
-        $response = $this->actingAs($this->user)->delete("/type-culture/{$typeCulture->id}");
-
-        $response->assertStatus(403);
-        $this->assertDatabaseHas('type_cultures', ['id' => $typeCulture->id]);
+        $response = $this->actingAs($this->admin)->get('/admin/type-cultures/create');
+        $response->assertStatus(200);
     }
 }

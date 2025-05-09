@@ -14,28 +14,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Création de l'utilisateur administrateur
-        DB::table('users')->insert([
-            'name' => 'Administrateur',
-            'email' => 'admin@agrigest.com',
-            'password' => Hash::make('admin123'),
-            'role_id' => 2, // ID du rôle admin
-            'created_at' => now(),
-            'updated_at' => now(),
-              ]);
-        //création d'un agriculteur
-        DB::table('users')->insert([
-            'name' => 'Agriculteur',
-            'email' => 'agriuser@agrigest.com',
-            'password' => Hash::make('agriuser123'),
-            'role_id' => 1, // ID du rôle agriculteur
-            'created_at' => now(),
-            'updated_at' => now(),
+        // Ajout des rôles de base (si table vide)
+        if (DB::table('roles')->count() === 0) {
+            DB::table('roles')->insert([
+                [
+                    'nom_role' => 'agriculteur',
+                    'description' => 'Utilisateur agriculteur',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'nom_role' => 'admin',
+                    'description' => 'Administrateur du système',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            ]);
+        }
+
+        // Appel du seeder avec données togolaises
+        $this->call([
+            TogoDataSeeder::class,
         ]);
-        // Appel des autres seeders
-        //  $this->call([
-        //     UserSeeder::class,
-        //     ParcelleInterventionSeeder::class,
-        // ]);
     }
 }
